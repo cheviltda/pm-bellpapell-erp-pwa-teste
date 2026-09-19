@@ -6,11 +6,7 @@
 <link rel="manifest" href="./manifest.json">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#182b49">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="P&M Bellpapell ERP TESTE">
+<meta name="theme-color" content="#182b49"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="P&M Bellpapell ERP TESTE">
 <title>P&M Bellpapell ERP • V22.1</title>
 <style>
 :root{--navy:#182b49;--pink:#d98aa8;--blue:#b9d8ed;--gold:#c8a96b;--bg:#f7f5f6;--white:#fff;--text:#26313d;--muted:#78818d;--green:#4d956f;--red:#bd5962;--orange:#c9873d}
@@ -1149,24 +1145,21 @@ function printContract(){
   if(!content)return alert('O contrato ainda não foi gerado.');
   const w=window.open('','_blank','width=900,height=900');
   if(!w)return alert('O navegador bloqueou a janela de impressão. Permita pop-ups para este ERP.');
-  w.document.write('<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Contrato - P&M Bellpapell</title><style>body{font-family:Arial,sans-serif;color:#222;margin:35px;line-height:1.55;font-size:13px}.contract-head{text-align:center;border-bottom:2px solid #c8a96b;padding-bottom:14px;margin-bottom:18px}.contract-logo{width:75px;height:75px;object-fit:contain}.contract-head h3{color:#182b49;font-family:Georgia,serif}.contract-paper h3{text-align:center;color:#182b49;font-family:Georgia,serif}.contract-paper h4{color:#182b49;margin:18px 0 6px}.contract-data{background:#faf7f8;border-left:3px solid #d98aa8;padding:11px 13px;margin:12px 0}.signature-area{display:grid;grid-template-columns:1fr 1fr;gap:35px;margin-top:55px;text-align:center}.signature-line{border-top:1px solid #555;padding-top:7px}</style></head><body><div class="contract-paper">'+content+'</div><script>window.onload=function(){window.print();}<\/script>
-<script>
-/* PWA TESTE: somente registra o Service Worker. Não altera a lógica, dados ou localStorage do ERP. */
-(function(){
-  if('serviceWorker' in navigator && location.protocol !== 'file:'){
-    window.addEventListener('load', function(){
-      navigator.serviceWorker.register('./sw.js', {scope:'./'})
-        .catch(function(err){ console.warn('PWA ERP TESTE:', err); });
-    });
-  }
-})();
-</script>
-
-</body></html>');
+  w.document.write('<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Contrato - P&M Bellpapell</title><style>body{font-family:Arial,sans-serif;color:#222;margin:35px;line-height:1.55;font-size:13px}.contract-head{text-align:center;border-bottom:2px solid #c8a96b;padding-bottom:14px;margin-bottom:18px}.contract-logo{width:75px;height:75px;object-fit:contain}.contract-head h3{color:#182b49;font-family:Georgia,serif}.contract-paper h3{text-align:center;color:#182b49;font-family:Georgia,serif}.contract-paper h4{color:#182b49;margin:18px 0 6px}.contract-data{background:#faf7f8;border-left:3px solid #d98aa8;padding:11px 13px;margin:12px 0}.signature-area{display:grid;grid-template-columns:1fr 1fr;gap:35px;margin-top:55px;text-align:center}.signature-line{border-top:1px solid #555;padding-top:7px}</style></head><body><div class="contract-paper">'+content+'</div><script>window.onload=function(){window.print();}<\/script></body></html>');
   w.document.close();
 }
 
 function filterTable(input,id){let q=input.value.toLowerCase();document.querySelectorAll('#'+id+' tr').forEach((r,i)=>{if(i)r.style.display=r.innerText.toLowerCase().includes(q)?'':'none'})}
 render();renderCalendar();renderFinance();renderDeliveryKPIs();renderAlerts();if(typeof loadAdmin==='function')loadAdmin();
+</script>
+<script>
+/* PWA TESTE: somente registra o Service Worker. */
+(function(){
+  if('serviceWorker' in navigator && location.protocol !== 'file:'){
+    window.addEventListener('load', function(){
+      navigator.serviceWorker.register('./sw.js', {scope:'./'}).catch(function(err){ console.warn('PWA ERP TESTE:', err); });
+    });
+  }
+})();
 </script>
 </body></html>
