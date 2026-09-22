@@ -1,13 +1,10 @@
 <!DOCTYPE html>
-<!-- P&M Bellpapell ERP V22.1 - TESTE BASE PUBLIC + MULTIPLAS LOCACOES -->
-
 <html lang="pt-BR">
 <head>
-<link rel="manifest" href="./manifest.json">
+<link rel="manifest" href="/manifest.json">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#182b49"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="P&M Bellpapell ERP TESTE">
-<title>P&M Bellpapell ERP • V22.1</title>
+<title>P&M Bellpapell ERP • V22.1 • PONTE TESTE</title>
 <style>
 :root{--navy:#182b49;--pink:#d98aa8;--blue:#b9d8ed;--gold:#c8a96b;--bg:#f7f5f6;--white:#fff;--text:#26313d;--muted:#78818d;--green:#4d956f;--red:#bd5962;--orange:#c9873d}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}.app{display:flex;min-height:100vh}.side{position:fixed;inset:0 auto 0 0;width:235px;background:var(--navy);color:#fff;padding:22px 14px}.logo{width:58px;height:58px;border:2px solid var(--gold);border-radius:50%;margin:auto;display:grid;place-items:center;background:linear-gradient(145deg,#f7cbd9,#c8dfef);color:var(--navy);font-weight:bold}.logo.real-logo{border:0;background:transparent;overflow:hidden;width:72px;height:72px}
@@ -207,7 +204,7 @@
 </section>
 
 <section id="acervo" class="page">
-<header><div><h1>Acervo</h1><div class="sub">Estoque central de peças</div></div><button class="btn primary" onclick="openItemModal()">+ Nova peça</button></header>
+<header><div><h1>Acervo</h1><div class="sub">Estoque central de peças</div></div><div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end"><button class="btn light" type="button" onclick="lerAcervoPonte()">🔗 Ler acervo da ponte</button><button class="btn primary" onclick="openItemModal()">+ Nova peça</button></div></header>
 <div class="panel"><table class="table"><thead><tr><th>Item</th><th>Total</th><th>Em uso/reservado</th><th>Disponível</th><th>Valor avulso</th><th>Estado</th><th>Ações</th></tr></thead><tbody id="itemTable"></tbody></table></div>
 </section>
 
@@ -320,8 +317,12 @@
 </div><div class="actions"><button class="btn light" onclick="closeModal('client')">Cancelar</button><button class="btn primary" id="saveClientBtn" onclick="saveClient()">Salvar</button></div></div></div>
 
 <div class="modal" id="item"><div class="modalbox"><h2 id="itemModalTitle">Nova peça do acervo</h2><div class="form">
-<div class="field"><label>Nome da peça</label><input id="iName" placeholder="Ex.: Cilindro branco"></div><div class="field"><label>Quantidade total</label><input id="iQty" type="number" min="1" value="1"></div>
+<div class="field full"><label>📷 Foto principal</label><input id="iPhoto" type="file" accept="image/*"><div id="iPhotoPreview" style="margin-top:8px"></div></div>
+<div class="field full"><label>Nome da peça</label><input id="iName" placeholder="Ex.: Cilindro branco"></div><div class="field"><label>Quantidade total</label><input id="iQty" type="number" min="1" value="1"></div>
 <div class="field"><label>Valor para locação avulsa</label><input id="iPrice" type="number" min="0" step="0.01" value="0" placeholder="Ex.: 35,00"></div>
+<div class="field"><label>📂 Categoria</label><select id="iCat"><option value="">Selecione</option><option value="mesas">Mesas e móveis</option><option value="paineis">Painéis</option><option value="cilindros">Cilindros</option><option value="boleiras">Boleiras</option><option value="bandejas">Bandejas</option><option value="vasos">Vasos</option><option value="decoracao">Decoração</option><option value="kits">Kits Pegue e Monte</option></select></div>
+<div class="field"><label>Subcategoria</label><input id="iSubcat" placeholder="Ex.: Mesa provençal"></div>
+<div class="field full"><label>🎨 Cores / variações da mesma peça</label><div id="iVariationList" style="display:grid;gap:8px"></div><div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:8px"><input id="iVariationName" placeholder="Ex.: Branco"><input id="iVariationPhoto" type="file" accept="image/*" style="max-width:150px"></div><button type="button" class="btn light" style="margin-top:8px" onclick="addItemVariation()">＋ Adicionar cor</button><div style="font-size:12px;color:#6b7280;margin-top:6px">Cada cor pode ter sua própria foto.</div></div>
 <div class="field full"><label>Observação</label><input id="iObs" placeholder="Ex.: em ótimo estado"></div>
 </div><div class="actions"><button class="btn light" onclick="closeModal('item')">Cancelar</button><button class="btn primary" id="saveItemBtn" onclick="saveItem()">Salvar</button></div></div></div>
 
@@ -331,14 +332,14 @@
 </div><div class="actions"><button class="btn light" onclick="closeModal('kit')">Cancelar</button><button class="btn primary" id="saveKitBtn" onclick="saveKit()">Salvar</button></div></div></div>
 
 <div class="modal" id="reservation"><div class="modalbox"><h2 id="reservationModalTitle">Nova reserva</h2><div class="form">
-<div class="field full"><label>Cliente</label><select id="rClient" onchange="updateReservationClientInfo()"></select><div id="reservationClientInfo" class="muted" style="margin-top:7px"></div></div>
 <div class="field full"><label>Locações desta reserva</label><div id="reservationLines"></div><button class="btn light" type="button" onclick="addReservationLine()">➕ Adicionar locação</button><div class="muted" style="margin-top:7px">Você pode combinar Kit, Kit Festa na Mesa e Peças avulsas na mesma reserva.</div></div>
+<div class="field full"><label>👤 Cliente</label><select id="rClient" onchange="checkReservation()"><option value="">Selecione o cliente</option></select></div>
 <div class="field"><label>Data do evento</label><input id="rDate" type="date" onchange="checkReservation()"></div><div class="field"><label>Tema da festa</label><input id="rTheme" placeholder="Ex.: Jardim Encantado"></div>
 <div class="field"><label>Entrega</label><input id="rDelivery" type="date"></div><div class="field"><label>Devolução</label><input id="rReturn" type="date"></div>
 <div class="field"><label>Valor</label><input id="rValue" readonly></div>
 <div class="field"><label>Entrada recebida</label><input id="rPaid" type="number" step=".01" value="0"></div><div class="field"><label>Status</label><select id="rStatus"><option value="Confirmada">🟢 Confirmada</option><option value="Pendente">🟡 Pendente</option><option value="Cancelada">🔴 Cancelada</option><option value="Contrato gerado">🔵 Contrato gerado</option></select></div><div class="field full"><label>Observação</label><input id="rObs"></div>
-<div class="field full" id="stockCheck"><div class="muted">Selecione a data do evento para verificar o estoque.</div></div>
-</div><div class="actions"><button class="btn light" type="button" onclick="closeModal('reservation')">Cancelar</button><button class="btn light" type="button" id="deleteReservationBtn" style="display:none;color:#a23e48;border-color:#e6c5c9" onclick="deleteReservation(editingReservationId)">🗑️ Excluir reserva</button><button class="btn primary" type="button" id="saveReservationBtn" onclick="saveReservation()">Confirmar reserva</button></div></div></div>
+<div class="field full" id="stockCheck"><div class="muted">Selecione o kit e a data para verificar o estoque.</div></div>
+</div><div class="actions"><button class="btn light" onclick="closeModal('reservation')">Cancelar</button><button class="btn light" id="deleteReservationBtn" style="display:none" onclick="deleteReservation(editingReservationId)">🗑️ Excluir</button><button type="button" class="btn primary" id="saveReservationBtn" onclick="saveReservation(event)">Confirmar reserva</button></div></div></div>
 
 <div class="modal" id="reservationDetails"><div class="modalbox"><h2>Detalhes da reserva</h2><div id="reservationDetailsContent"></div><div class="actions"><button class="btn light" onclick="closeModal('reservationDetails')">Fechar</button><button class="btn primary" id="editReservationBtn">✏️ Editar reserva</button><button class="btn light" id="generateContractBtn">📄 Gerar contrato</button></div></div></div>
 <div class="modal" id="financeEntry"><div class="modalbox">
@@ -377,6 +378,7 @@
   </div>
 </div></div>
 
+<div class="modal" id="ponteAcervoModal"><div class="modalbox" style="max-width:760px"><h2>🔗 Acervo da Ponte Supabase</h2><div class="sub" style="margin-bottom:12px">TESTE V2 • leitura + importação individual. A quantidade do estoque local nunca é substituída pela ponte.</div><div id="ponteAcervoStatus" class="success" style="margin-bottom:12px">Aguardando leitura...</div><div id="ponteAcervoList" style="max-height:55vh;overflow:auto"></div><div class="actions"><button class="btn light" type="button" onclick="closeModal('ponteAcervoModal')">Fechar</button></div></div></div>
 <div class="modal" id="contractPreview"><div class="modalbox contract-modal">
 <h2>Contrato de locação</h2>
 <div id="contractContent" class="contract-paper"></div>
@@ -386,6 +388,18 @@
 </div>
 </div></div>
 <script>
+// Referências explícitas dos campos da reserva.
+// Não dependemos de IDs virarem variáveis globais no navegador.
+const rClient=document.getElementById('rClient');
+const rDate=document.getElementById('rDate');
+const rTheme=document.getElementById('rTheme');
+const rDelivery=document.getElementById('rDelivery');
+const rReturn=document.getElementById('rReturn');
+const rPaid=document.getElementById('rPaid');
+const rValue=document.getElementById('rValue');
+const rStatus=document.getElementById('rStatus');
+const rObs=document.getElementById('rObs');
+const stockCheck=document.getElementById('stockCheck');
 const key='pm_erp_v2';
 let db=JSON.parse(localStorage.getItem(key)||'null')||{
 clients:[{id:1,name:'Mariana Souza',phone:'(24) 99999-0000',cpf:'',email:''}],
@@ -399,6 +413,13 @@ kits:[
 ],
 reservations:[]
 };
+// V22.1: limpeza única das reservas de teste usadas durante a configuração.
+// Mantém clientes, peças e kits. Depois desta limpeza, novos eventos serão preservados normalmente.
+if(!localStorage.getItem('pm_v221_test_reservations_cleaned')){
+  db.reservations=[];
+  localStorage.setItem(key,JSON.stringify(db));
+  localStorage.setItem('pm_v221_test_reservations_cleaned','1');
+}
 function persist(){localStorage.setItem(key,JSON.stringify(db));render()}
 function formatDateBR(d){
   if(!d)return '-';
@@ -423,6 +444,8 @@ function closeModal(id){
     editingReservationId=null;
     document.getElementById('reservationModalTitle').textContent='Nova reserva';
     document.getElementById('saveReservationBtn').textContent='Salvar';
+    const delBtn=document.getElementById('deleteReservationBtn');
+    if(delBtn)delBtn.style.display='none';
   }
   if(id==='kit'){
     editingKitId=null;
@@ -559,35 +582,104 @@ function openItemModal(id=null){
   editingItemId=id;
   const title=document.getElementById('itemModalTitle');
   const btn=document.getElementById('saveItemBtn');
-
+  const fields=['iName','iQty','iPrice','iCat','iSubcat','iObs'];
   if(id){
     const item=db.items.find(x=>x.id===id);
     if(!item)return;
     document.getElementById('iName').value=item.name||'';
     document.getElementById('iQty').value=item.qty||1;
     document.getElementById('iPrice').value=item.price||0;
+    document.getElementById('iCat').value=item.cat||'';
+    document.getElementById('iSubcat').value=item.subcat||'';
     document.getElementById('iObs').value=item.obs||'';
+    renderItemVariations(item.variations||[]);
+    renderItemPhotoPreview(item.photo||'');
     title.textContent='Editar peça do acervo';
     btn.textContent='Salvar alterações';
   }else{
-    document.getElementById('iName').value='';
+    fields.forEach(id=>{document.getElementById(id).value='';});
     document.getElementById('iQty').value=1;
     document.getElementById('iPrice').value=0;
-    document.getElementById('iObs').value='';
+    renderItemVariations([]);
+    document.getElementById('iVariationName').value='';
+    document.getElementById('iVariationPhoto').value='';
+    renderItemPhotoPreview('');
+    document.getElementById('iPhoto').value='';
     title.textContent='Nova peça do acervo';
     btn.textContent='Salvar';
   }
   document.getElementById('item').classList.add('show');
 }
 
-function saveItem(){
+function renderItemVariations(list){
+  const el=document.getElementById('iVariationList');
+  el.innerHTML='';
+  (Array.isArray(list)?list:[]).forEach((v,idx)=>{
+    const name=typeof v==='string'?v:(v&&v.name)||'';
+    const photo=(v&&v.photo)||'';
+    if(!name)return;
+    const row=document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;gap:8px;padding:7px;border:1px solid #e5e7eb;border-radius:10px;background:#fafafa';
+    row.dataset.index=idx;
+    row.innerHTML='<div style="width:42px;height:42px;border-radius:8px;overflow:hidden;background:#eee;display:flex;align-items:center;justify-content:center">'+(photo?'<img src="'+photo+'" style="width:100%;height:100%;object-fit:cover">':'🎨')+'</div><div style="flex:1"><strong>'+escapeHtml(name)+'</strong></div><button type="button" class="btn light" onclick="this.parentElement.remove()">×</button>';
+    el.appendChild(row);
+  });
+}
+
+function addItemVariation(){
+  const name=document.getElementById('iVariationName').value.trim();
+  const input=document.getElementById('iVariationPhoto');
+  if(!name)return alert('Informe o nome da cor ou variação.');
+  const file=input.files&&input.files[0];
+  const add=(photo)=>{
+    const el=document.getElementById('iVariationList');
+    const row=document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;gap:8px;padding:7px;border:1px solid #e5e7eb;border-radius:10px;background:#fafafa';
+    row.dataset.name=name;
+    row.dataset.photo=photo||'';
+    row.innerHTML='<div style="width:42px;height:42px;border-radius:8px;overflow:hidden;background:#eee;display:flex;align-items:center;justify-content:center">'+(photo?'<img src="'+photo+'" style="width:100%;height:100%;object-fit:cover">':'🎨')+'</div><div style="flex:1"><strong>'+escapeHtml(name)+'</strong></div><button type="button" class="btn light" onclick="this.parentElement.remove()">×</button>';
+    el.appendChild(row);
+    document.getElementById('iVariationName').value='';
+    input.value='';
+  };
+  if(!file){add('');return;}
+  const reader=new FileReader();
+  reader.onload=()=>add(reader.result);
+  reader.readAsDataURL(file);
+}
+
+function collectItemVariations(){
+  return Array.from(document.querySelectorAll('#iVariationList > div')).map(row=>({name:row.dataset.name||'',photo:row.dataset.photo||''})).filter(v=>v.name);
+}
+
+function renderItemPhotoPreview(src){
+  const el=document.getElementById('iPhotoPreview');
+  el.innerHTML=src?'<img src="'+src+'" style="width:90px;height:90px;object-fit:cover;border-radius:10px">':'';
+}
+
+function readItemPhoto(){
+  return new Promise(resolve=>{
+    const input=document.getElementById('iPhoto');
+    const file=input.files&&input.files[0];
+    if(!file)return resolve(null);
+    const reader=new FileReader();
+    reader.onload=()=>resolve(reader.result);
+    reader.onerror=()=>resolve(null);
+    reader.readAsDataURL(file);
+  });
+}
+
+async function saveItem(){
   let name=document.getElementById('iName').value.trim();
   let qty=+document.getElementById('iQty').value;
   let price=+document.getElementById('iPrice').value;
   if(!name||qty<1)return alert('Informe nome e quantidade.');
   if(!Number.isFinite(price)||price<0)return alert('Informe um valor avulso válido.');
 
-  const data={name,qty,price,obs:document.getElementById('iObs').value.trim()};
+  const newPhoto=await readItemPhoto();
+  const oldItem=editingItemId?db.items.find(x=>x.id===editingItemId):null;
+  const variations=collectItemVariations();
+  const data={name,qty,price,cat:document.getElementById('iCat').value,subcat:document.getElementById('iSubcat').value.trim(),variations,photo:newPhoto||((oldItem&&oldItem.photo)||''),obs:document.getElementById('iObs').value.trim(),catalogProductId:oldItem?.catalogProductId||''};
 
   if(editingItemId){
     const item=db.items.find(x=>x.id===editingItemId);
@@ -607,7 +699,8 @@ function deleteItem(id){
 
   const usedInKit=db.kits.filter(k=>(k.parts||[]).some(p=>p.itemId===id));
   if(usedInKit.length){
-    return alert('Não é possível excluir esta peça porque ela está sendo usada em um ou mais kits. Edite os kits primeiro.');
+    const kits=usedInKit.map(k=>k.name).join(', ');
+    return alert('Não é possível excluir "'+item.name+'" porque ela está sendo usada nestes kits: '+kits+'. Edite os kits primeiro.');
   }
 
   if(!confirm('Excluir "'+item.name+'"? Esta ação não pode ser desfeita.'))return;
@@ -768,51 +861,54 @@ function checkReservation(){
   if(problems.length){stock.innerHTML='<div class="danger"><b>🚨 '+(valid?'Conflito de estoque':'Verifique as locações')+'</b><br>'+problems.join('<br>')+'</div>';return false}
   stock.innerHTML='<div class="success">🟢 '+lines.length+' locação(ões) selecionada(s). Total: <b>'+money(total)+'</b></div>';return true;
 }
-function updateReservationClientInfo(){
-  const c=db.clients.find(x=>x.id===+document.getElementById('rClient').value),box=document.getElementById('reservationClientInfo');
-  if(!box)return;
-  if(!c){box.textContent='Selecione o cliente.';return;}
-  box.innerHTML='📱 '+(c.phone||'-')+' • CPF: '+(c.cpf||'-')+' • ✉️ '+(c.email||'-')+'<br>📍 '+(c.address||'Endereço não informado');
-}
 function fillReservation(){
-  rClient.innerHTML='<option value="">Selecione o cliente</option>'+db.clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');rDate.value='';rTheme.value='';rDelivery.value='';rReturn.value='';rPaid.value=0;rValue.value='';rStatus.value='Confirmada';rObs.value='';document.getElementById('reservationLines').innerHTML='';addReservationLine({type:'kit',kitId:''});updateReservationClientInfo();stockCheck.innerHTML='<div class="muted">Selecione a data do evento para verificar o estoque.</div>';
+  rClient.innerHTML=db.clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');rDate.value='';rTheme.value='';rDelivery.value='';rReturn.value='';rPaid.value=0;rValue.value='';rStatus.value='Confirmada';rObs.value='';document.getElementById('reservationLines').innerHTML='';addReservationLine({type:'kit',kitId:''});stockCheck.innerHTML='<div class="muted">Selecione a data do evento para verificar o estoque.</div>';
 }
 let editingReservationId=null;
-
 function openReservationModal(id=null){
-  editingReservationId=id;const title=document.getElementById('reservationModalTitle'),btn=document.getElementById('saveReservationBtn'),delBtn=document.getElementById('deleteReservationBtn');fillReservation();
-  if(id){const r=db.reservations.find(x=>x.id===id);if(!r)return;document.getElementById('rClient').value=r.clientId||'';updateReservationClientInfo();document.getElementById('rDate').value=r.date||'';document.getElementById('rTheme').value=r.theme||'';document.getElementById('rDelivery').value=r.delivery||'';document.getElementById('rReturn').value=r.returnDate||'';document.getElementById('rPaid').value=r.paid||0;document.getElementById('rStatus').value=r.status||'Confirmada';document.getElementById('rObs').value=r.obs||'';document.getElementById('reservationLines').innerHTML='';getReservationLines(r).forEach(line=>renderReservationLine(line));title.textContent='Editar reserva';btn.textContent='Salvar alterações';if(delBtn)delBtn.style.display='inline-block';document.getElementById('reservation').classList.add('show');checkReservation();}
-  else{title.textContent='Nova reserva';btn.textContent='Salvar';if(delBtn)delBtn.style.display='none';openModal('reservation');}
+  editingReservationId=id;const title=document.getElementById('reservationModalTitle'),btn=document.getElementById('saveReservationBtn');fillReservation();
+  if(id){const r=db.reservations.find(x=>x.id===id);if(!r)return;document.getElementById('rClient').value=r.clientId||'';document.getElementById('rDate').value=r.date||'';document.getElementById('rTheme').value=r.theme||'';document.getElementById('rDelivery').value=r.delivery||'';document.getElementById('rReturn').value=r.returnDate||'';document.getElementById('rPaid').value=r.paid||0;document.getElementById('rStatus').value=r.status||'Confirmada';document.getElementById('rObs').value=r.obs||'';document.getElementById('reservationLines').innerHTML='';getReservationLines(r).forEach(line=>renderReservationLine(line));title.textContent='Editar reserva';btn.textContent='Salvar alterações';document.getElementById('deleteReservationBtn').style.display='inline-block';document.getElementById('reservation').classList.add('show');checkReservation();}
+  else{title.textContent='Nova reserva';btn.textContent='Salvar';document.getElementById('deleteReservationBtn').style.display='none';openModal('reservation');}
 }
 function deleteReservation(id){
-  const r=db.reservations.find(x=>x.id===id);
-  if(!r)return;
-  const client=db.clients.find(x=>x.id===r.clientId);
-  const name=client?.name||'esta festa';
-  if(!confirm('Excluir a reserva de '+name+'? Esta ação não pode ser desfeita.'))return;
-  db.reservations=db.reservations.filter(x=>x.id!==id);
-  if(Array.isArray(db.financeEntries)){
-    db.financeEntries=db.financeEntries.filter(x=>x.reservationId!==id);
-  }
-  editingReservationId=null;
-  closeModal('reservation');
-  persist();
-  renderCalendar();
-  render();
-  renderDelivery('entrega');
-  renderDeliveryKPIs();
-  renderAlerts();
+  const r=db.reservations.find(x=>x.id===id);if(!r)return;const client=db.clients.find(x=>x.id===r.clientId),name=client?.name||'esta festa';if(!confirm('Excluir a reserva de '+name+'? Esta ação não pode ser desfeita.'))return;db.reservations=db.reservations.filter(x=>x.id!==id);if(Array.isArray(db.financeEntries))db.financeEntries=db.financeEntries.filter(x=>x.reservationId!==id);editingReservationId=null;closeModal('reservation');persist();renderCalendar();render();renderDelivery('entrega');renderDeliveryKPIs();renderAlerts();
 }
-function saveReservation(){
+function saveReservation(event){
+  if(event&&typeof event.preventDefault==='function')event.preventDefault();
+  const btn=document.getElementById('saveReservationBtn');
   const clientId=+document.getElementById('rClient').value,date=document.getElementById('rDate').value,lines=getReservationLinesFromForm();
-  if(!clientId||!date)return alert('Preencha cliente e data do evento.');if(!lines.length)return alert('Adicione pelo menos uma locação.');
-  if(lines.some(l=>l.type!=='avulso'&&!l.kitId))return alert('Selecione o kit de cada locação.');if(lines.some(l=>l.type==='avulso'&&!l.parts.length))return alert('Adicione pelo menos uma peça em cada locação avulsa.');
+  if(!clientId||!date)return alert('Preencha cliente e data do evento.');
+  if(!lines.length)return alert('Adicione pelo menos uma locação.');
+  if(lines.some(l=>l.type!=='avulso'&&!l.kitId))return alert('Selecione o kit de cada locação.');
+  if(lines.some(l=>l.type==='avulso'&&!l.parts.length))return alert('Adicione pelo menos uma peça em cada locação.');
   if(!checkReservation())return alert('Há conflito de estoque ou faltam informações na reserva.');
+
   const firstKit=lines.find(l=>l.type==='kit'&&l.kitId),firstAv=lines.find(l=>l.type==='avulso');
   const data={clientId,lines,kitId:firstKit?firstKit.kitId:null,date,theme:document.getElementById('rTheme').value.trim(),delivery:document.getElementById('rDelivery').value,returnDate:document.getElementById('rReturn').value,value:+document.getElementById('rValue').value||0,paid:+document.getElementById('rPaid').value||0,obs:document.getElementById('rObs').value.trim(),status:document.getElementById('rStatus').value||'Confirmada'};
   if(firstAv)data.avulsoParts=firstAv.parts;else delete data.avulsoParts;
-  if(editingReservationId){const r=db.reservations.find(x=>x.id===editingReservationId);if(r)Object.assign(r,data);}else db.reservations.push({id:Date.now(),...data});
-  editingReservationId=null;closeModal('reservation');persist();renderCalendar();render();renderDelivery('entrega');renderDeliveryKPIs();renderAlerts();
+
+  if(btn)btn.disabled=true;
+  try{
+    if(editingReservationId){
+      const r=db.reservations.find(x=>x.id===editingReservationId);
+      if(!r)throw new Error('Reserva não encontrada.');
+      Object.assign(r,data);
+    }else{
+      db.reservations.push({id:Date.now(),...data});
+    }
+    localStorage.setItem(key,JSON.stringify(db));
+    editingReservationId=null;
+    closeModal('reservation');
+    try{renderCalendar();}catch(e){console.error('Erro ao atualizar agenda:',e)}
+    try{render();}catch(e){console.error('Erro ao atualizar ERP:',e)}
+    try{renderDelivery('entrega');}catch(e){console.error('Erro ao atualizar entregas:',e)}
+    try{renderDeliveryKPIs();}catch(e){console.error('Erro ao atualizar indicadores:',e)}
+    try{renderAlerts();}catch(e){console.error('Erro ao atualizar alertas:',e)}
+  }catch(err){
+    alert('Não foi possível salvar a reserva. Os dados não foram confirmados.\n\n'+(err?.message||err));
+  }finally{
+    if(btn)btn.disabled=false;
+  }
 }
 
 let editingClientId=null;
@@ -883,14 +979,14 @@ function renderAlerts(){
 
 function render(){
 document.getElementById('kpiRes').textContent=db.reservations.length;document.getElementById('kpiCli').textContent=db.clients.length;document.getElementById('kpiItens').textContent=db.items.length;
-let activeReservations=db.reservations.filter(r=>(r.status||'Confirmada')!=='Cancelada');let due=activeReservations.reduce((s,r)=>s+r.value-r.paid,0);document.getElementById('kpiReceber').textContent=money(due);
-document.getElementById('finTotal').textContent=money(activeReservations.reduce((s,r)=>s+r.value,0));document.getElementById('finPaid').textContent=money(activeReservations.reduce((s,r)=>s+r.paid,0));document.getElementById('finDue').textContent=money(due);
-let rows=db.reservations.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(r=>{let c=db.clients.find(x=>x.id===r.clientId);let st=r.status||'Confirmada';let cls=st==='Confirmada'?'status-confirmada':st==='Pendente'?'status-pendente':st==='Cancelada'?'status-cancelada':'status-contrato';return `<tr><td>${new Date(r.date+'T12:00:00').toLocaleDateString('pt-BR')}</td><td>${c?.name||'-'}</td><td>${r.theme||'-'}</td><td>${linesSummary(r)}</td><td>${r.delivery?new Date(r.delivery+'T12:00:00').toLocaleDateString('pt-BR'):'-'}</td><td>${r.returnDate?new Date(r.returnDate+'T12:00:00').toLocaleDateString('pt-BR'):'-'}</td><td>${money(r.value)}</td><td><span class="badge ${cls}">${st==='Confirmada'?'🟢 ':st==='Pendente'?'🟡 ':st==='Cancelada'?'🔴 ':'🔵 '}${st}</span></td><td><button class="btn light" type="button" onclick="openReservationModal(${r.id})">✏️ Editar</button></td></tr>`}).join('')||'<tr><td colspan="8" class="muted">Nenhuma reserva cadastrada.</td></tr>';
+let activeReservations=db.reservations.filter(r=>(r.status||'Confirmada')!=='Cancelada');let due=activeReservations.reduce((s,r)=>s+(+r.value||0)-(+r.paid||0),0);document.getElementById('kpiReceber').textContent=money(due);
+document.getElementById('finTotal').textContent=money(activeReservations.reduce((s,r)=>s+(+r.value||0),0));document.getElementById('finPaid').textContent=money(activeReservations.reduce((s,r)=>s+(+r.paid||0),0));document.getElementById('finDue').textContent=money(due);
+let rows=db.reservations.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(r=>{let c=db.clients.find(x=>x.id===r.clientId);let st=r.status||'Confirmada';let cls=st==='Confirmada'?'status-confirmada':st==='Pendente'?'status-pendente':st==='Cancelada'?'status-cancelada':'status-contrato';return `<tr><td>${new Date(r.date+'T12:00:00').toLocaleDateString('pt-BR')}</td><td>${c?.name||'-'}</td><td>${r.theme||'-'}</td><td>${linesSummary(r)}</td><td>${r.delivery?new Date(r.delivery+'T12:00:00').toLocaleDateString('pt-BR'):'-'}</td><td>${r.returnDate?new Date(r.returnDate+'T12:00:00').toLocaleDateString('pt-BR'):'-'}</td><td>${money(r.value)}</td><td><span class="badge ${cls}">${st==='Confirmada'?'🟢 ':st==='Pendente'?'🟡 ':st==='Cancelada'?'🔴 ':'🔵 '}${st}</span></td><td><button class="btn light" type="button" onclick="openReservationModal(${r.id})">✏️ Editar</button></td></tr>`}).join('')||'<tr><td colspan="9" class="muted">Nenhuma reserva cadastrada.</td></tr>';
 reservationTable.innerHTML=rows;dashReservations.innerHTML=rows||'<tr><td>Nenhuma reserva.</td></tr>';
 clientTable.innerHTML=db.clients.map(c=>`<tr><td>${c.name}</td><td>${c.phone||'-'}</td><td>${c.cpf||'-'}</td><td>${c.address||'-'}</td><td><button class="btn light" type="button" onclick="openClientModal(${c.id})">✏️ Editar</button> <button class="btn light" type="button" onclick="openClientHistory(${c.id})">📋 Histórico</button></td></tr>`).join('');
 itemTable.innerHTML=db.items.map(i=>{let used=db.reservations.filter(r=>(r.status||'Confirmada')!=='Cancelada').reduce((sum,r)=>sum+getReservationLines(r).reduce((ls,line)=>{if(line.type==='avulso')return ls+(line.parts||[]).filter(p=>+p.itemId===+i.id).reduce((a,p)=>a+(+p.qty||0),0);const k=db.kits.find(x=>x.id==line.kitId);return ls+(k?.parts||[]).filter(p=>+p.itemId===+i.id).reduce((a,p)=>a+(+p.qty||0),0)},0),0);let avail=i.qty-used;return `<tr><td>${i.name}</td><td>${i.qty}</td><td>${used}</td><td><b>${avail}</b></td><td>${money(i.price||0)}</td><td><span class="badge ${avail>0?'ok':'bad'}">${avail>0?'Disponível':'Indisponível'}</span></td><td><button class="btn light" type="button" onclick="openItemModal(${i.id})">✏️ Editar</button> <button class="btn light" type="button" onclick="deleteItem(${i.id})">🗑️ Excluir</button></td></tr>`}).join('');
 kitList.innerHTML=db.kits.map(k=>`<div class="panel kit"><h3>🎀 ${k.name}</h3><div class="muted">${money(k.price)}</div><p>${k.parts.map(p=>{let i=db.items.find(x=>x.id===p.itemId);return `${p.qty}× ${i?.name||'item removido'}`}).join(' • ')}</p><div class="actions"><button class="btn light" type="button" onclick="openKitModal(${k.id})">✏️ Editar kit</button></div></div>`).join('');
-let alerts=[];db.items.forEach(i=>{if(i.qty<2)alerts.push(`⚠️ ${i.name}: estoque baixo.`)});alertsEl= document.getElementById('alerts');alertsEl.innerHTML=alerts.length?alerts.map(x=>`<div class="alert">${x}</div>`).join(''):'<div class="muted">Nenhum alerta.</div>';
+let alerts=[];db.items.forEach(i=>{if(i.qty<2)alerts.push(`⚠️ ${i.name}: estoque baixo.`)});alertsEl=document.getElementById('alerts');alertsEl.innerHTML=alerts.length?alerts.map(x=>`<div class="alert">${x}</div>`).join(''):'<div class="muted">Nenhum alerta.</div>';
 }
 
 let calendarCursor = new Date();
@@ -956,6 +1052,63 @@ function saveAdmin(){
   localStorage.setItem(key,JSON.stringify(db));
   const msg=document.getElementById('adminMsg');
   if(msg){msg.style.display='block';setTimeout(()=>msg.style.display='none',1800)}
+}
+
+function escapeHtml(value){
+  return String(value ?? '').replace(/[&<>\"']/g, function(ch){
+    return ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[ch]);
+  });
+}
+
+const PONTE_SUPABASE_URL='https://lkvqurdokdkcjhazscvv.supabase.co';
+const PONTE_SUPABASE_KEY='sb_publishable_oNEz5f1BERX0BJcF4iOAdA_r0-cZAgT';
+
+async function importarPecaDaPonte(p){
+  if(!p || !p.catalog_product_id)return alert('Esta peça não possui ID do catálogo.');
+  const catalogId=String(p.catalog_product_id);
+  const existing=db.items.find(i=>String(i.catalogProductId||'')===catalogId);
+  const defaultQty=existing?String(existing.qty||1):'1';
+  const answer=prompt((existing?'Peça já cadastrada no ERP. Informe a quantidade atual do estoque local:':'Informe a quantidade desta peça no estoque local:')+'\n\n'+(p.name||'Peça'),defaultQty);
+  if(answer===null)return;
+  const qty=parseInt(answer,10);
+  if(!Number.isFinite(qty)||qty<1)return alert('Informe uma quantidade inteira maior que zero.');
+  const variations=Array.isArray(p.variants)?p.variants.map(v=>({name:String(v?.name||''),photo:String(v?.photo||'')})).filter(v=>v.name):[];
+  if(existing){
+    existing.name=String(p.name||existing.name||''); existing.price=Number(p.price)||0; existing.cat=String(p.cat||existing.cat||''); existing.subcat=String(p.subcat||existing.subcat||''); existing.obs=String(p.obs||existing.obs||''); existing.photo=String(p.photo||existing.photo||''); existing.variations=variations; existing.catalogProductId=catalogId; existing.qty=qty;
+    persist(); alert('Peça atualizada no ERP local.\n\n'+existing.name+'\nEstoque confirmado: '+existing.qty+' unidade(s).');
+  }else{
+    const newItem={id:Date.now(),name:String(p.name||'Peça sem nome'),qty,price:Number(p.price)||0,cat:String(p.cat||''),subcat:String(p.subcat||''),variations,photo:String(p.photo||''),obs:String(p.obs||''),catalogProductId:catalogId};
+    db.items.push(newItem); persist(); alert('Peça importada para o ERP local.\n\n'+newItem.name+'\nEstoque inicial: '+newItem.qty+' unidade(s).');
+  }
+}
+
+async function lerAcervoPonte(){
+  const modal=document.getElementById('ponteAcervoModal');
+  const status=document.getElementById('ponteAcervoStatus');
+  const list=document.getElementById('ponteAcervoList');
+  modal.classList.add('show');
+  status.className='success';
+  status.textContent='🔄 Lendo a tabela acervo do Supabase...';
+  list.innerHTML='';
+  try{
+    const r=await fetch(PONTE_SUPABASE_URL+'/rest/v1/acervo?select=id,catalog_product_id,name,price,cat,subcat,obs,photo,variants,updated_at&order=updated_at.desc',{
+      headers:{'apikey':PONTE_SUPABASE_KEY,'Authorization':'Bearer '+PONTE_SUPABASE_KEY,'Accept':'application/json'}
+    });
+    if(!r.ok){const txt=await r.text();throw new Error('HTTP '+r.status+' • '+txt.slice(0,180));}
+    const rows=await r.json();
+    status.textContent='✅ LEITURA OK • '+rows.length+' peça(s) na ponte';
+    if(!rows.length){list.innerHTML='<div class="panel">Nenhuma peça encontrada na ponte.</div>';return;}
+    list.innerHTML=rows.map(p=>{
+      const vars=Array.isArray(p.variants)?p.variants:[];
+      const img=p.photo?'<img src="'+p.photo.replace(/"/g,'&quot;')+'" style="width:82px;height:82px;object-fit:cover;border-radius:12px;border:1px solid #e5e7eb">':'<div style="width:82px;height:82px;border-radius:12px;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-size:28px">📦</div>';
+      return '<div class="panel" style="display:flex;gap:12px;align-items:flex-start;margin-bottom:10px">'+img+'<div style="flex:1;min-width:0"><strong style="font-size:17px">'+escapeHtml(p.name||'Peça sem nome')+'</strong><div class="sub" style="margin-top:4px">'+escapeHtml(p.cat||'-')+' • '+escapeHtml(p.subcat||'-')+'</div><div style="margin-top:6px"><b>'+money(p.price||0)+'</b> / locação</div><div class="sub" style="margin-top:5px">ID catálogo: '+escapeHtml(String(p.catalog_product_id||'-'))+' • Variações: '+vars.length+'</div><div style="margin-top:10px"><button class="btn primary" type="button" data-import-id="'+escapeHtml(String(p.catalog_product_id||''))+'">📥 Importar esta peça para o ERP</button></div></div></div>';
+    }).join('');
+    list.querySelectorAll('[data-import-id]').forEach(btn=>{btn.addEventListener('click',()=>{const p=rows.find(x=>String(x.catalog_product_id)===String(btn.dataset.importId)); if(p)importarPecaDaPonte(p);});});
+  }catch(e){
+    status.className='error';
+    status.textContent='❌ Falha na leitura: '+(e.message||e);
+    list.innerHTML='<div class="panel">O ERP de teste não conseguiu ler a ponte.</div>';
+  }
 }
 
 function logout(){
@@ -1151,15 +1304,5 @@ function printContract(){
 
 function filterTable(input,id){let q=input.value.toLowerCase();document.querySelectorAll('#'+id+' tr').forEach((r,i)=>{if(i)r.style.display=r.innerText.toLowerCase().includes(q)?'':'none'})}
 render();renderCalendar();renderFinance();renderDeliveryKPIs();renderAlerts();if(typeof loadAdmin==='function')loadAdmin();
-</script>
-<script>
-/* PWA TESTE: somente registra o Service Worker. */
-(function(){
-  if('serviceWorker' in navigator && location.protocol !== 'file:'){
-    window.addEventListener('load', function(){
-      navigator.serviceWorker.register('./sw.js', {scope:'./'}).catch(function(err){ console.warn('PWA ERP TESTE:', err); });
-    });
-  }
-})();
 </script>
 </body></html>
